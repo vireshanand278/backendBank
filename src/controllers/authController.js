@@ -1,7 +1,7 @@
 
 const userModel=require('../models/userModel');
 const jwt=require('jsonwebtoken');
-
+const services=require('../services/emailServices');
 
 
 
@@ -42,9 +42,20 @@ async function registerUser(req,res){
         message: 'User registered successfully',
         status: 'success'
     });
+    
 
+        try {
+                await services.sendRegistrationEmail(email, name);
+                console.log("Registration email sent successfully");
+            } catch (error) {
+                console.error("Failed to send registration email:", error);
+        }   
 
-}  
+} 
+
+        
+
+  
 
 /**
  * - user login controller
@@ -79,6 +90,8 @@ async function loginUser(req,res){
         message: 'User logged in successfully',
         status: 'success'
     });
+
+    
 }
 
 
