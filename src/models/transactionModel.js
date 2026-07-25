@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-const transationSchema = new mongoose.Schema({
+const transactionSchema = new mongoose.Schema({
     fromAccount:{
         type: mongoose.Schema.Types.ObjectId,
         ref:"account",
@@ -18,7 +18,7 @@ const transationSchema = new mongoose.Schema({
     status:{
         type:String,
         enum:{
-            values:["pending","complete","failed","reversed"],
+            values:["pending","completed","failed","reversed"],
             message:"the status must be pending ,complete ,failed ,or reversed "
         },
         default:"pending",
@@ -39,7 +39,7 @@ const transationSchema = new mongoose.Schema({
     timestamps:true,
 })
 
-const transationModel=mongoose.model("transation",transationSchema);
+const transactionModel=mongoose.model("transaction",transactionSchema);
 
 
-module.exports=transationModel;
+module.exports=transactionModel;

@@ -165,4 +165,59 @@ Thank you for choosing BackendBank ❤️
     await sendEmail(userEmail, subject, text, html);
 }
 
-module.exports = {sendRegistrationEmail};
+
+async function sendTransactionEmail(userEmail,name,amount,toAccoun){
+  const subject="Transaction sucessfull";
+  const text =`Hello${name},\n\nour Transaction of of amount ${amount} to account ${toAccount} was sucessful.\n\n Best regards BackendBank `;
+  const html = `
+<h2>Transaction Successful</h2>
+
+<p>Hello <strong>${name}</strong>,</p>
+
+<p>
+  Your transaction of <strong>${amount}</strong> to account
+  <strong>${toAccount}</strong> was successful.
+</p>
+
+<p>Thank you for banking with us.</p>
+
+<p>
+  Best regards,<br>
+  <strong>BackendBank Team</strong>
+</p>
+`;
+
+await sendEmail(userEmail,subject,text,html);
+
+}
+
+async function sendTransactionFailedEmail(userEmail,name,amount,toAccoun){
+  const subject="Transaction failed";
+  const text =`Hello${name},\n\nour Transaction of of amount ${amount} to account ${toAccount} was unsucessful.\n\n Best regards BackendBank `;
+  const html = `
+<h2>Transaction Failed</h2>
+
+<p>Hello <strong>${name}</strong>,</p>
+
+<p>
+  Your transaction of <strong>${amount}</strong> to account
+  <strong>${toAccount}</strong> could not be completed.
+</p>
+
+<p>Please check your account balance or try again later.</p>
+
+<p>
+  Best regards,<br>
+  <strong>BackendBank Team</strong>
+</p>
+`;
+
+await sendEmail(userEmail,subject,text,html);
+
+}
+
+module.exports = {
+  sendRegistrationEmail,
+  sendTransactionEmail,
+  sendTransactionFailedEmail,
+};

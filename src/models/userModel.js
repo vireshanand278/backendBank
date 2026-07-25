@@ -24,8 +24,12 @@ const userSchema = new mongoose.Schema({
         select: false,  //to hide password when fetching user data
 
     },
-
-
+    systemUser:{
+        type:Boolean,
+        default:false,
+        immutable:true,
+        select:false,
+    }
 },{
     timestamps: true,  //to automatically add createdAt and updatedAt fields
 });

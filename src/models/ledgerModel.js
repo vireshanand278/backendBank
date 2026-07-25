@@ -16,7 +16,7 @@ const ledgerSchema = new mongoose.Schema({
         min:[0,"negitive amount is not acceptable "],
         immutable:true,
     },
-    transation:{
+    transaction:{
         type: mongoose.Schema.Types.ObjectId,
         ref:"transation",
         required:[true,"required a transation "],
