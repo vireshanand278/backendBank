@@ -1,5 +1,8 @@
 const userModel=require('../models/userModel');
 const jwt=require('jsonwebtoken');
+const tokenBlackListModel=require("../models/blackListModel");
+
+
 
 async function authMiddleware(req,res,next){
     const token=req.cookies.token||req.headers.authorization?.split(" ")[1];
@@ -8,6 +11,16 @@ async function authMiddleware(req,res,next){
             message:"unaouthirized acess ,the token is missing "
         })
     }
+    const isBlacklisted=await tokenBlackListModel.findOne({
+        token
+    })
+
+    if(isBlacklisted){
+        return res.status.json(401)({
+            message:"the token is black listed"
+        })
+    }
+
 
     try{
         const decoded=jwt.verify(token,process.env.JWT_SECRET);
@@ -34,6 +47,15 @@ async function authSystemUserMiddelware(req,res,next){
     if(!token){
         return res.status(401).json({
             message:"unaouthirized acess ,the token is missing "
+        })
+    }
+     const isBlacklisted=await tokenBlackListModel.findOne({
+        token
+    })
+
+    if(isBlacklisted){
+        return res.status.json(401)({
+            message:"the token is black listed"
         })
     }
 

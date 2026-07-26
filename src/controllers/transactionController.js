@@ -86,48 +86,69 @@ async function createTransaction(req,res){
             message:`the balance is insuffecient Balance:( ${balance} )  amount:(${ amount })`
         })
     }
+let transaction;
+    try{
+
+    
 
     //5.create transaction (pending)
         const session=await mongoose.startSession();
         session.startTransaction()
 
-        const transaction=await transactionModel.create({
+        const transaction=(await  transactionModel.create([{
             fromAccount,
             toAccount,
             amount,
             idempotencyKey,
             status:"pending",
 
-        },{session});
+        }],{session}));
 
 
         //6.create the debit ledger
-        const debitLedger=await ledgerModel.create({
+        const debitLedger=await ledgerModel.create([{
             account:fromAccount,
             aamount:amount,
             transaction:transaction._id,
             type:"debit"
 
-        },{session});
+        }],{session});
+
+        await (()=>{
+            return new Promise((resolve)=>setTimeout(resolve,25*1000));
+        })
 
         //7.create the credit ledger
-        const creditLedger=await ledgerModel.create({
+        const creditLedger=await ledgerModel.create([{
             account:toAccount,
             aamount:amount,
             transaction:transaction._id,
             type:"credit"
 
-        },{session});
+        }],{session});
         
         //8.mark the status (complete)
-        transaction.status="complete";
-        await transaction.save({session});
+        await transactionModel.findOneAndUpdate(
+            {_id:transaction._id},
+            {status:"completed"},
+            {session}
+        )
 
         //9.mongoose session termination
         await session.commitTransaction()
         session.endSession();
+    }catch(error){
+        return res.status(400).json({
+            message:"Transaction is pending  due to error,Please try after some time  "
+        })
+    }
 
         //10.send the email
+        await emailServices.sendTransactionEmail(req.user.email,req.user.name,amount,toAccount);
+        return res.status(201).json({
+            message:"Transaction compleated sucessfullt",
+            transaction:transaction
+        })
         
 }
 

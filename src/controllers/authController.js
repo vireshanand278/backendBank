@@ -2,6 +2,7 @@
 const userModel=require('../models/userModel');
 const jwt=require('jsonwebtoken');
 const services=require('../services/emailServices');
+const tokenBlackListModel=require("../models/blackListModel");
 
 
 
@@ -95,7 +96,32 @@ async function loginUser(req,res){
 }
 
 
+
+
+/**
+ * - user logout controller
+ * -POST /api/auth/logout 
+ */
+async function logoutUser(req,res){
+    const token =req.cookies.token||req.headers.authorization?.split(" ")[1]
+    if(!token){
+        return res.status(200).json({
+            message:"User loged ot susessfully"
+        })
+
+    }
+    await tokenBlackListModel.create({
+        token:token
+    })
+    res.clearCookie("token")
+    res.status(200).json({
+            message:"User loged ot susessfully"
+        })
+
+}
+
 module.exports={
     registerUser,
-    loginUser
+    loginUser,
+    logoutUser,
 };  
