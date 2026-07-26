@@ -19,6 +19,12 @@ const transactionRoutes=require('./routes/transactionRoute');
 /**
  * -useing the routes required
  */
+
+app.get("/",(req,res)=>{
+    res.send("Ledure system is running sucessfylly");
+})
+
+
 app.use("/api/accounts", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/transactios",transactionRoutes);
